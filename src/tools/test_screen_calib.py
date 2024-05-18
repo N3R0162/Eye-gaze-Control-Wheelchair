@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import os
-import time
 
 def capture_and_estimate_camera_position(num_images=10, pattern_size=(7, 10), square_size=1.0):
     obj_points = []
@@ -29,26 +28,25 @@ def capture_and_estimate_camera_position(num_images=10, pattern_size=(7, 10), sq
         ret, corners = cv2.findChessboardCorners(gray, pattern_size, None)
 
         if ret:
-            print(f"Checkerboard detected for image {count + 1}")
-            count += 1
             cv2.drawChessboardCorners(frame, pattern_size, corners, ret)
-            img_points.append(corners)
-            obj_points.append(objp)
-            cv2.imshow('Calibration', frame)
+            cv2.putText(frame, f"Checkerboard detected. Press 'c' to capture", (10, 30), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+
+        else:
+            cv2.putText(frame, f"Move the checkerboard into view. Press 'q' to quit", (10, 30), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+
+        cv2.imshow('Calibration', frame)
 
         # Wait for user to press 'c' to capture the next image or 'q' to quit...
-        print("Press 'c' to capture the next image or 'q' to quit...")
-        while True:
-            key = cv2.waitKey(1)
-            if key == ord('c'):
-                break
-            elif key == ord('q'):
-                cap.release()
-                cv2.destroyAllWindows()
-                print("Calibration image capture complete.")
-                return
-
-        time.sleep(1)  # Optional: Add a delay to give time to reposition the checkerboard
+        key = cv2.waitKey(1)
+        if key == ord('c') and ret:
+            print(f"Checkerboard detected for image {count + 1}")
+            img_points.append(corners)
+            obj_points.append(objp)
+            count += 1
+        elif key == ord('q'):
+            break
 
     cap.release()
     cv2.destroyAllWindows()

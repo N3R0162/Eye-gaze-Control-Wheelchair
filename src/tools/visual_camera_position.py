@@ -6,9 +6,9 @@ import numpy as np
 # Create a 3D plot
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-camera_position = [[-204.37401473],
- [  24.562849  ],
- [   0.98811705]]
+camera_position =  [[-323.781122  ],
+ [  35.05458151],
+ [   3.98082982]]
 pattern_size = (7,10)
 # Plot the camera position
 ax.scatter(camera_position[0], camera_position[1], camera_position[2], c='r', marker='o', label='Camera Position')

@@ -24,7 +24,7 @@ class HomTransform:
         self.sfm = SFM(directory)
         self.camera_matrix, self.dist_coeffs = gcv.ReadCameraCalibrationData(os.path.join(directory, "camera_data"))
         self.inv_camera_matrix = np.linalg.inv(self.camera_matrix)
-        self.camera_position = np.array([-204.37401473, 24.562849, 0.98811705])
+        self.camera_position = np.array([-323.781122, 35.05458151, 3.98082982])
 
     def RecordGaze(self, model, cap, sfm=False):
         df = pd.DataFrame()
