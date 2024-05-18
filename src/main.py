@@ -16,7 +16,18 @@ def main(dir):
     print(f"Total time to load model: {1000*total_model_load_time:.1f}ms")
 
     homtrans = HomTransform(dir)
-    cap=cv2.VideoCapture(0)
+
+    pipeline = (
+        "nvarguscamerasrc ! "
+        "video/x-raw(memory:NVMM), width=640, height=480, format=(string)NV12, framerate=(fraction)30/1 ! "
+        "nvvidconv ! "
+        "video/x-raw, format=(string)BGRx ! "
+        "videoconvert ! "
+        "video/x-raw, format=(string)BGR ! appsink"
+    )
+
+
+    cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
     """ for higher resolution (max available: 1920x1080) """
     # cap=cv2.VideoCapture(0, cv2.CAP_DSHOW)
     # cap.set(cv2.CAP_PROP_SETTINGS, 1)
