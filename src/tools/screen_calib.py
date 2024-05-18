@@ -3,7 +3,7 @@ import numpy as np
 import os
 import time
 
-def capture_calibration_images(num_images=10, pattern_size=(7, 10), save_dir='/home/kyv/Desktop/Capstone/WebCamGazeEstimation/src/tools/calibration_images/'):
+def capture_calibration_images(num_images=10, pattern_size=(7, 10), save_dir='/home/nano/Desktop/WebCamGazeEstimation/src/tools/calibration_images/'):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     
