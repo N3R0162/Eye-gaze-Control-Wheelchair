@@ -24,7 +24,8 @@ class HomTransform:
         self.sfm = SFM(directory)
         self.camera_matrix, self.dist_coeffs = gcv.ReadCameraCalibrationData(os.path.join(directory, "camera_data"))
         self.inv_camera_matrix = np.linalg.inv(self.camera_matrix)
-        
+        self.camera_position = np.array([-204.37401473, 24.562849, 0.98811705])
+
     def RecordGaze(self, model, cap, sfm=False):
         df = pd.DataFrame()
         frame_prev = None
@@ -201,11 +202,10 @@ class HomTransform:
         self.df.to_csv(os.path.join(self.dir, "results", "Calibration.csv"))
 
         gaze, SetVal, WTransG, g = self._RemoveOutliers()
-    
         if sfm:
-            STransW, scaleWtG, STransG = self._fitSTransG_sfm(gaze, SetVal, WTransG, g)
+            STransW, scaleWtG, STransG = self._fitSTransG_sfm(gaze, SetVal, WTransG, g, camera_position=self.camera_position)
         else:
-            STransG = self._fitSTransG(gaze, SetVal, g)
+            STransG = self._fitSTransG(gaze, SetVal, g, camera_position = self.camera_position)
 
         Sg, SgCalib = self._getCalibValuesOnScreen(g, STransG)
         """ Plot Gaze On Screen"""
@@ -263,7 +263,7 @@ class HomTransform:
         """
         return FSgaze, Sgaze, Sgaze2
 
-    def _fitSTransG(self, gaze, SetVal, g):
+    def _fitSTransG(self, gaze, SetVal, g, camera_position):
         
         gaze = gaze.to_numpy()
         SetVal = SetVal.to_numpy() 
@@ -282,7 +282,8 @@ class HomTransform:
             return error.flatten()
         
         const = (SRotG, gaze, SetVal)
-        x0 = np.array([self.width/2, self.height/2, self.width])
+        # x0 = np.array([self.width/2, self.height/2, self.width])
+        x0 = np.array([1, self.camera_position[0], self.camera_position[1]])
         res = opt.least_squares(alignError, x0, args=const)
         print(f"res.optimality = {res.optimality}")
         xopt = res.x
@@ -302,7 +303,7 @@ class HomTransform:
 
         return STransG
     
-    def _fitSTransG_sfm(self, gaze, SetVal, WTransG, g):
+    def _fitSTransG_sfm(self, gaze, SetVal, WTransG, g, camera_position):
         gaze = gaze.to_numpy()
         SetVal = SetVal.to_numpy() 
         WTransG = WTransG.to_numpy().reshape(-1,4,4)
@@ -326,7 +327,9 @@ class HomTransform:
             return error.flatten()
 
         const = (SRotW, WRotG, gaze, WtG, SetVal)
-        x0 = np.array([1, self.width/2, self.height/2])
+        # x0 = np.array([1, self.width/2, self.height/2])
+        x0 = np.array([1, self.camera_position[0], self.camera_position[1]])
+
         res = opt.least_squares(alignError, x0, args=const)
         print(f"res.optimality = {res.optimality}")
         xopt = res.x

@@ -16,7 +16,6 @@ from plgaze.gaze_estimator import GazeEstimator
 from plgaze.utils import get_3d_face_model
 
 class GazeModel:
-
     def __init__(self, config: DictConfig):
         self.config = config
         self.df = pd.DataFrame()
