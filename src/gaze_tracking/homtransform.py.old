@@ -60,127 +60,40 @@ class HomTransform:
         df = df.reset_index(drop=True)
         df.to_csv(os.path.join(self.dir, "results", "MyGazeTracking.csv"))
 
-    # def RunGazeOnScreen(self, model, cap, sfm=False):
-    #     """ Present different trajectories on screen and record gaze
-    #     """
-
-    #     if cap != None:
-    #         out_video, wc_width, wc_height = gcv.get_out_video(cap, os.path.join(self.dir, "results"), file_name = "ky_output.mp4", scalewidth=2)
-
-    #     white_frame = gcv.getWhiteFrame(self.width, self.height)
-    #     df = pd.DataFrame()
-    #     target = gcv.Targets(self.width, self.height)
-    #     frame_prev = None
-    #     WTransG1 = np.eye(4)
-    #     target.setSetPos([int(self.width/8), int(self.height/8)])   # for DrawSpecificTarget()
-    #     FSgaze = np.array([[-10],[-10],[-10]])
-
-    #     # Define arrow button positions and sizes
-    #     button_size = 50
-    #     up_button = (self.width // 2, self.height // 4)
-    #     down_button = (self.width // 2, 3 * self.height // 4)
-    #     left_button = (self.width // 4, self.height // 2)
-    #     right_button = (3 * self.width // 4, self.height // 2)
-
-    #     while cap.isOpened():
-    #         gazeframe, SetPos = target.DrawTargetInMiddle(white_frame, self._mm2pixel(FSgaze))
-
-    #         # Draw arrow buttons
-    #         cv2.arrowedLine(gazeframe, (up_button[0], up_button[1] + button_size), (up_button[0], up_button[1] - button_size), (0, 0, 255), 4)
-    #         cv2.arrowedLine(gazeframe, (down_button[0], down_button[1] - button_size), (down_button[0], down_button[1] + button_size), (0, 0, 255), 4)
-    #         cv2.arrowedLine(gazeframe, (left_button[0] + button_size, left_button[1]), (left_button[0] - button_size, left_button[1]), (0, 0, 255), 4)
-    #         cv2.arrowedLine(gazeframe, (right_button[0] - button_size, right_button[1]), (right_button[0] + button_size, right_button[1]), (0, 0, 255), 4)
-
-    #         try:
-    #             ret, frame = cap.read()
-    #         except StopIteration:
-    #             break
-
-    #         eye_info = model.get_gaze(frame)
-
-    #         gaze = eye_info['gaze']
-
-    #         if frame_prev is not None and sfm:
-    #             WTransG1, WTransG2, W_P = self.sfm.get_GazeToWorld(model, frame_prev, frame)
-
-    #         frame_prev = frame
-
-    #         if sfm:
-    #             FSgaze, Sgaze, Sgaze2 = self._getGazeOnScreen_sfm(gaze, WTransG1)
-    #         else:
-    #             FSgaze, Sgaze, Sgaze2 = self._getGazeOnScreen(gaze)
-
-    #         SetPos = self._pixel2mm(SetPos)
-    #         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    #         df = pd.concat([ df, pd.DataFrame([np.hstack((timestamp, eye_info['gaze'], FSgaze.flatten(), eye_info['EyeRLCenterPos'],
-    #                                                     eye_info['HeadPosAnglesYPR'], eye_info['HeadPosInFrame'], SetPos, 0, WTransG1[:3,3].flatten(),
-    #                                                     Sgaze.flatten(), Sgaze2.flatten(), eye_info['EyeState'] )) ]) ])
-
-    #         # Check gaze overlap with arrow buttons
-    #         gaze_x, gaze_y = self._mm2pixel(FSgaze[:2].flatten())
-    #         if abs(gaze_x - up_button[0]) <= button_size and abs(gaze_y - up_button[1]) <= button_size:
-    #             print("Up")
-    #         elif abs(gaze_x - down_button[0]) <= button_size and abs(gaze_y - down_button[1]) <= button_size:
-    #             print("Down")
-    #         elif abs(gaze_x - left_button[0]) <= button_size and abs(gaze_y - left_button[1]) <= button_size:
-    #             print("Left")
-    #         elif abs(gaze_x - right_button[0]) <= button_size and abs(gaze_y - right_button[1]) <= button_size:
-    #             print("Right")
-
-    #         if out_video is not None:
-    #             final_frame = np.concatenate((cv2.flip(cv2.resize(gazeframe, (wc_width, wc_height)), 1), frame), axis=1)
-    #             out_video.write(final_frame)
-
-    #         key_pressed = cv2.waitKey(60)
-    #         if key_pressed == 27:
-    #             break
-
-    #     cap.release()
-    #     out_video.release()
-    #     cv2.destroyAllWindows()
-    #     df.columns = ['time_sec','gaze_x', 'gaze_y', 'gaze_z', 'Sgaze_x', 'Sgaze_y', 'Sgaze_z', 'REyePos_x', 'REyePos_y', 'LEyePos_x', 'LEyePos_y',
-    #                 'yaw', 'pitch', 'roll', 'HeadPos_x', 'HeadPos_y', 'set_x', 'set_y', 'set_z', 'WTransG_x', 'WTransG_y', 'WTransG_z',
-    #                 'RegSgaze_x', 'RegSgaze_y', 'RegSgaze_z', 'CalPSgaze_x', 'CalPSgaze_y', 'CalPSgaze_z', 'ROpenClose','LOpenClose']
-    #     df = df.reset_index(drop=True)
-    #     df.to_csv(os.path.join(self.dir, "results", "GazeTracking_2.csv"))
-
-    #     return
-
     def RunGazeOnScreen(self, model, cap, sfm=False):
-        """ Present different trajectories on screen and record gaze """
+        """ Present different trajectories on screen and record gaze
+        """
 
-        if cap is not None:
-            out_video, wc_width, wc_height = gcv.get_out_video(cap, os.path.join(self.dir, "results"), file_name="ky_output.mp4", scalewidth=2)
+        if cap != None:
+            out_video, wc_width, wc_height = gcv.get_out_video(cap, os.path.join(self.dir, "results"), file_name = "ky_output.mp4", scalewidth=2)
 
         white_frame = gcv.getWhiteFrame(self.width, self.height)
         df = pd.DataFrame()
         target = gcv.Targets(self.width, self.height)
         frame_prev = None
         WTransG1 = np.eye(4)
-        target.setSetPos([int(self.width / 8), int(self.height / 8)])  # for DrawSpecificTarget()
-        FSgaze = np.array([[-10], [-10], [-10]])
-
-        # Define arrow button positions and sizes
-        button_size = 130
-        up_button = (self.width // 2, self.height // 4)
-        down_button = (self.width // 2, 3 * self.height // 4)
-        left_button = (self.width // 4, self.height // 2)
-        right_button = (3 * self.width // 4, self.height // 2)
-
+        target.setSetPos([int(self.width/8), int(self.height/8)])   # for DrawSpecificTarget()
+        FSgaze = np.array([[-10],[-10],[-10]])
         while cap.isOpened():
+            # gazeframe, SetPos = target.DrawTargetGaze(white_frame, self._mm2pixel(FSgaze))
+            # gazeframe, SetPos = target.DrawRectangularTargets(white_frame, self._mm2pixel(FSgaze))
+            # gazeframe, SetPos = target.DrawSingleTargets(white_frame, self._mm2pixel(FSgaze))
+            gazeframe, SetPos = target.DrawTargetInMiddle(white_frame, self._mm2pixel(FSgaze))
+
             try:
                 ret, frame = cap.read()
             except StopIteration:
                 break
-
-            if not ret:
-                break
-
+            
+            # gray_image, prediction, morphedMask, falseColor, centroid = model.get_iris_Cnn(frame)
+            # Undistort the image
+            # frame = cv2.undistort(frame, self.camera_matrix, self.dist_coeffs)
             eye_info = model.get_gaze(frame)
+
             gaze = eye_info['gaze']
 
-            if frame_prev is not None and sfm:
-                WTransG1, WTransG2, W_P = self.sfm.get_GazeToWorld(model, frame_prev, frame)
+            if frame_prev is not None and sfm:                
+                WTransG1, WTransG2, W_P = self.sfm.get_GazeToWorld(model, frame_prev, frame)        # WtG1 is a unit vector, has to be scaled   
 
             frame_prev = frame
 
@@ -188,58 +101,32 @@ class HomTransform:
                 FSgaze, Sgaze, Sgaze2 = self._getGazeOnScreen_sfm(gaze, WTransG1)
             else:
                 FSgaze, Sgaze, Sgaze2 = self._getGazeOnScreen(gaze)
-
-            SetPos = self._pixel2mm(self._mm2pixel(FSgaze[:2].flatten()))  # Correctly initialize SetPos
-
+            
+            SetPos = self._pixel2mm(SetPos)
             timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-            df = pd.concat([df, pd.DataFrame([np.hstack((timestamp, eye_info['gaze'], FSgaze.flatten(), eye_info['EyeRLCenterPos'],
-                                                        eye_info['HeadPosAnglesYPR'], eye_info['HeadPosInFrame'], SetPos, 0, WTransG1[:3, 3].flatten(),
-                                                        Sgaze.flatten(), Sgaze2.flatten(), eye_info['EyeState']))])])
-
-            # Draw arrows on white frame
-            cv2.arrowedLine(white_frame, (up_button[0], up_button[1] + button_size), (up_button[0], up_button[1] - button_size), (0, 0, 255), 4)
-            cv2.arrowedLine(white_frame, (down_button[0], down_button[1] - button_size), (down_button[0], down_button[1] + button_size), (0, 0, 255), 4)
-            cv2.arrowedLine(white_frame, (left_button[0] + button_size, left_button[1]), (left_button[0] - button_size, left_button[1]), (0, 0, 255), 4)
-            cv2.arrowedLine(white_frame, (right_button[0] - button_size, right_button[1]), (right_button[0] + button_size, right_button[1]), (0, 0, 255), 4)
-
-            gazeframe, SetPos = target.DrawTargetInMiddle(white_frame, self._mm2pixel(FSgaze))
-
-            # Check gaze overlap with arrow buttons
-            FSgaze_pixel = self._mm2pixel(FSgaze[:2].flatten())
-            gaze_x, gaze_y = FSgaze_pixel[:2]
-            if abs(gaze_x - up_button[0]) <= button_size and abs(gaze_y - up_button[1]) <= button_size:
-                cv2.putText(white_frame, "Up", (up_button[0] - button_size, up_button[1] - button_size - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-                
-            elif abs(gaze_x - down_button[0]) <= button_size and abs(gaze_y - down_button[1]) <= button_size:
-                cv2.putText(white_frame, "Down", (down_button[0] - button_size, down_button[1] + button_size + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-            elif abs(gaze_x - left_button[0]) <= button_size and abs(gaze_y - left_button[1]) <= button_size:
-                cv2.putText(white_frame, "Left", (left_button[0] - button_size - 80, left_button[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-            elif abs(gaze_x - right_button[0]) <= button_size and abs(gaze_y - right_button[1]) <= button_size:
-                cv2.putText(white_frame, "Right", (right_button[0] + button_size + 10, right_button[1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-
+            df = pd.concat([ df, pd.DataFrame([np.hstack((timestamp, eye_info['gaze'], FSgaze.flatten(), eye_info['EyeRLCenterPos'], 
+                                                        eye_info['HeadPosAnglesYPR'], eye_info['HeadPosInFrame'], SetPos, 0, WTransG1[:3,3].flatten(), 
+                                                        Sgaze.flatten(), Sgaze2.flatten(), eye_info['EyeState'] )) ]) ])
 
             if out_video is not None:
                 final_frame = np.concatenate((cv2.flip(cv2.resize(gazeframe, (wc_width, wc_height)), 1), frame), axis=1)
                 out_video.write(final_frame)
+                # out_video.write(frame)
 
-            cv2.imshow("Gaze Tracking", gazeframe)
             key_pressed = cv2.waitKey(60)
             if key_pressed == 27:
                 break
 
         cap.release()
-        if out_video is not None:
-            out_video.release()
+        out_video.release()
         cv2.destroyAllWindows()
-        df.columns = ['time_sec', 'gaze_x', 'gaze_y', 'gaze_z', 'Sgaze_x', 'Sgaze_y', 'Sgaze_z', 'REyePos_x', 'REyePos_y', 'LEyePos_x', 'LEyePos_y',
-                    'yaw', 'pitch', 'roll', 'HeadPos_x', 'HeadPos_y', 'set_x', 'set_y', 'set_z', 'WTransG_x', 'WTransG_y', 'WTransG_z',
-                    'RegSgaze_x', 'RegSgaze_y', 'RegSgaze_z', 'CalPSgaze_x', 'CalPSgaze_y', 'CalPSgaze_z', 'ROpenClose', 'LOpenClose']
+        df.columns = ['time_sec','gaze_x', 'gaze_y', 'gaze_z', 'Sgaze_x', 'Sgaze_y', 'Sgaze_z', 'REyePos_x', 'REyePos_y', 'LEyePos_x', 'LEyePos_y',
+                      'yaw', 'pitch', 'roll', 'HeadPos_x', 'HeadPos_y', 'set_x', 'set_y', 'set_z', 'WTransG_x', 'WTransG_y', 'WTransG_z', 
+                      'RegSgaze_x', 'RegSgaze_y', 'RegSgaze_z', 'CalPSgaze_x', 'CalPSgaze_y', 'CalPSgaze_z', 'ROpenClose','LOpenClose']
         df = df.reset_index(drop=True)
         df.to_csv(os.path.join(self.dir, "results", "GazeTracking_2.csv"))
 
         return
-
-
 
     def calibrate(self, model, cap, sfm=False):
         frame = gcv.getWhiteFrame(self.width, self.height)
@@ -269,7 +156,9 @@ class HomTransform:
                 cv2.arrowedLine(frame2, (SetPos[0], SetPos[1]-length), (SetPos[0], SetPos[1]+length), (0, 0, 0), thickness)
             if idx == 12:
                 cv2.arrowedLine(frame2, (SetPos[0], SetPos[1]+length), (SetPos[0], SetPos[1]-length), (0, 0, 0), thickness)
+
             gcv.display_window(frame2)
+
             try:
                 ret, frame_cam = cap.read()
             except Exception as e:
@@ -277,22 +166,24 @@ class HomTransform:
             if ret == False:
                 print("Video stream ended")
                 break
+            
             if frame_prev is not None and sfm:
                 WTransG1, WTransG2, W_P = self.sfm.get_GazeToWorld(model, frame_prev, frame_cam)
 
-
             frame_prev = frame_cam.copy()
+
             # frame_cam = cv2.undistort(frame_cam, self.camera_matrix, self.dist_coeffs)
             eye_info = model.get_gaze(frame=frame_cam, imshow=False)
             if eye_info is None:
                 raise Exception("No eye info. Eye tracking failed.")
+            
             arr = np.array([])
             for i in pd.Series(eye_info).values:
                 arr = np.hstack((arr,i))
             timestamp = time.time_ns()/1000000000
             SetPos = self._pixel2mm(SetPos)
             self.df = pd.concat([ self.df, pd.DataFrame([np.hstack((timestamp, idx, arr, SetPos, 0, WTransG1.flatten()))]) ])
-            # print("Gaze calib: ", self.df)
+
             if out_video is not None:      
                 out_video.write(frame_cam)
             else:
@@ -301,15 +192,16 @@ class HomTransform:
             key_pressed = cv2.waitKey(1)   # this is needed
             if key_pressed == 27:
                 exit()
+
         cv2.destroyAllWindows()
         out_video.release()
         # print("Dataframe: ", self.df)
         # print("Length of self.df:", len(self.df)) 
         self.df.columns = ['Timestamp', 'idx', 'gaze_x', 'gaze_y', 'gaze_z', 'REyePos_x', 'REyePos_y', 'LEyePos_x', 'LEyePos_y', 'yaw', 'pitch', 'roll', 'HeadBox_xmin', 'HeadBox_ymin', 'RightEyeBox_xmin', 'RightEyeBox_ymin', 'LeftEyeBox_xmin', 'LeftEyeBox_ymin', 'ROpenClose','LOpenClose', 'set_x', 'set_y', 'set_z'] + 16*['WTransG']
         self.df = self.df.reset_index(drop=True)
-        self.df.to_csv(os.path.join(self.dir, "results", "Calibration_2.csv"))
+        self.df.to_csv(os.path.join(self.dir, "results", "Calibration.csv"))
+
         gaze, SetVal, WTransG, g = self._RemoveOutliers()
-        print(19)
         if sfm:
             STransW, scaleWtG, STransG = self._fitSTransG_sfm(gaze, SetVal, WTransG, g, camera_position=self.camera_position)
         else:
@@ -582,28 +474,20 @@ class HomTransform:
         ARotG = GRotA.transpose()
 
         return ARotG
-    
+
     def _mm2pixel(self, vector_mm):
         vector = vector_mm.copy()
-        if vector.ndim == 1:
-            if vector.shape[0] == 2 or vector.shape[0] == 3:
-                vector[0] = int(vector[0] * self.width / self.width_mm)
-                vector[1] = int(vector[1] * self.height / self.height_mm)
-                if vector.shape[0] == 3:
-                    vector[2] = int(vector[2])
-            else:
-                raise Exception("Vector has wrong shape")
-        elif vector.ndim == 2 and vector.shape[0] == 3:
-            vector[0] = int(vector[0] * self.width / self.width_mm)
-            vector[1] = int(vector[1] * self.height / self.height_mm)
+        if vector.ndim == 2 and vector.shape[0] == 3:
+            vector[0] = int(vector[0] * self.width/self.width_mm)
+            vector[1] = int(vector[1] * self.height/self.height_mm)
             vector[2] = int(vector[2])
-        elif vector.ndim == 2 and vector.shape[1] == 3:
-            vector[:, 0] = (vector[:, 0] * self.width / self.width_mm).astype(int)
-            vector[:, 1] = (vector[:, 1] * self.height / self.height_mm).astype(int)
-            vector[:, 2] = (vector[:, 2]).astype(int)
+        elif vector.ndim == 3 and vector.shape[1] == 3:
+            vector[:,0] = (vector[:,0] * self.width/self.width_mm).astype(int)
+            vector[:,1] = (vector[:,1] * self.height/self.height_mm).astype(int)
+            vector[:,2] = (vector[:,2]).astype(int)
         else:
             raise Exception("Vector has wrong shape")
-        
+
         return vector
 
     def _pixel2mm(self, vector_px):

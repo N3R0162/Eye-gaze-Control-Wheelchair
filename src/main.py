@@ -5,6 +5,7 @@ import numpy as np
 from gaze_tracking.homtransform import HomTransform
 from gaze_tracking.model import EyeModel
 
+
 def main(dir):                   
     output_directory = os.path.join(dir, "results")
     if not os.path.exists(output_directory):
@@ -27,7 +28,8 @@ def main(dir):
     )
 
 
-    cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+    # cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+    cap = cv2.VideoCapture(0)
     """ for higher resolution (max available: 1920x1080) """
     # cap=cv2.VideoCapture(0, cv2.CAP_DSHOW)
     # cap.set(cv2.CAP_PROP_SETTINGS, 1)
@@ -37,7 +39,7 @@ def main(dir):
 
     """ Calibration """
     STransG = homtrans.calibrate(model, cap, sfm=True)
-    
+
     print("============================")
     print(f"STransG\n{np.array2string(STransG, formatter={'float': lambda x: f'{x:.2f}'})}")
 

@@ -47,21 +47,21 @@ class Targets():
         elif tdelta > 3*time_interval and tdelta < 4*time_interval:
             idx = 3
             Setpos = [int(self.width*9/10), int(self.height*9/10)]
-        # elif tdelta > 4*time_interval and tdelta < 5*time_interval:
-        #     idx = 4
-        #     Setpos = [int(self.width/2), int(self.height/2)]
-        # elif tdelta > 5*time_interval and tdelta < 6*time_interval:
-        #     idx = 5
-        #     Setpos = [int(self.width/2), int(self.height/8)]
-        # elif tdelta > 6*time_interval and tdelta < 7*time_interval:
-        #     idx = 6
-        #     Setpos = [int(self.width/2), int(self.height*9/10)]
-        # elif tdelta > 7*time_interval and tdelta < 8*time_interval:
-        #     idx = 7
-        #     Setpos = [int(self.width/10), int(self.height/2)]
-        # elif tdelta > 8*time_interval and tdelta < 9*time_interval:
-        #     idx = 8
-        #     Setpos = [int(self.width*9/10), int(self.height/2)]
+        elif tdelta > 4*time_interval and tdelta < 5*time_interval:
+            idx = 4
+            Setpos = [int(self.width/2), int(self.height/2)]
+        elif tdelta > 5*time_interval and tdelta < 6*time_interval:
+            idx = 5
+            Setpos = [int(self.width/2), int(self.height/8)]
+        elif tdelta > 6*time_interval and tdelta < 7*time_interval:
+            idx = 6
+            Setpos = [int(self.width/2), int(self.height*9/10)]
+        elif tdelta > 7*time_interval and tdelta < 8*time_interval:
+            idx = 7
+            Setpos = [int(self.width/10), int(self.height/2)]
+        elif tdelta > 8*time_interval and tdelta < 9*time_interval:
+            idx = 8
+            Setpos = [int(self.width*9/10), int(self.height/2)]
         # elif tdelta > 9*time_interval and tdelta < 10.5*time_interval:
         #     idx = 9
         #     Setpos = [int(self.width/2), int(self.height/2)]
