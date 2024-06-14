@@ -1,48 +1,27 @@
-# Webcam based Gaze Estimation
-Estimate gaze on computer screen
+## Eyegaze control wheelchairs
+This is the eye gaze control code for the Capstone Project. It includes the implementation of GazeCaps: Gaze Estimation With Self-Attention-Routed Capsules [2] and I use the mapping method from eye gaze vector to computer screen by Webcam-based gaze estimation for computer screen interaction [1].
 
-## Installation Guidelines
+## Install requirements
+To install the required library, please run:
+```sh
+pip install -r requirements.txt
+```
 
-- [ ] Set Up Python Virtual Environment
+## Running Procedure:
+### Camera Calibration:
+Because the default camera position is under the screen and it is inverted, if you want to run it normally on a webcam of a computer, which has the location on top of the screen, please run the calibration code with a 7x11 printed checker board. The command to run calibration is:
 
-    Create a virtual Python environment to avoid dependency conflicts. To create a virtual environment (Python 3.8), use the following command or create a virtual environment with Anaconda navigator:
+```sh
+python3 ./camera_calibration.py
+```
 
-        conda create --name <env_name> python=3.8
+### Running the program:
+To run the program, please run:
 
-- [ ] Activate Virtual Environment
+```sh
+python3 ./src/main-pl.py
+```
 
-    Activate the newly created Python virtual environment by issuing this command:    
-
-        conda activate <env_name>
-
-- [ ] Set Up and Update PIP to the Highest Version
-
-    Make sure pip is installed in your environment and upgrade it to the latest version by issuing the following command:
-
-        python -m pip install --upgrade pip
-
-- [ ] Install the Package
-
-    To install OpenVINO Development Tools into the existing environment with the deep learning framework of your choice, run the following command:
-
-        pip install openvino-dev
-        pip install -r requirements.txt or conda install --file requirements.txt
-
-    Additionally to OpenVino we added the demo programm from pl_gaze_estimation (https://github.com/hysts/pytorch_mpiigaze_demo), training code for the pl_gaze_estimation using MPIIGaze, MPIIFaceGaze, and ETH-XGaze are available under: https://github.com/hysts/pl_gaze_estimation/tree/main
-
-    This model however, runs beter under Ubuntu, but it was tested under Windows as well. To use the pl_gaze_estimation model run:
-
-        pip install -r requirements_pl_gaze.txt
-
-- [ ] Copy the file openh264-1.8.0-win64.dll into the environment path (e.g. C:\Anaconda3\envs\name_of_env)
-
-- [ ] run main.py to test the application with the OpenVino model
-
-- [ ] run main_pl.py to test the application with the pl_gaze_estimation model (https://github.com/hysts/pytorch_mpiigaze_demo)
-
-- [ ] in order to run main_compareWithTobii.py you need to generate a exe file that runs Tobii Eye Tracker 5, for this you need the sdk dll for Tobii Eye Tracker 5
-
-## Credits
-If you use the code in the academic context, please cite:
-
-Lucas Falch and Katrin Solveig Lohan, "Webcam-based gaze estimation for computer screen interaction", Frontiers in Robotics and AI, Volume 11 - 2024 | https://doi.org/10.3389/frobt.2024.1369566
+## Reference:
+[1] Lucas Falch and Katrin Solveig Lohan, "Webcam-based gaze estimation for computer screen interaction", Frontiers in Robotics and AI, Volume 11 - 2024 | https://doi.org/10.3389/frobt.2024.1369566
+[2] Wang, X., Wei, X., Li, Y., Deng, H., & Yu, Z. (2023). GazeCaps: Gaze Estimation With Self-Attention-Routed Capsules. IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)| https://openaccess.thecvf.com/content/CVPR2023W/GAZE/papers/Wang_GazeCaps_Gaze_Estimation_With_Self-Attention-Routed_Capsules_CVPRW_2023_paper.pdf
