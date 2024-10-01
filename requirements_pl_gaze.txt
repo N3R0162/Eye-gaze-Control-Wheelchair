@@ -6,6 +6,6 @@ pytorch-lightning==1.5.3
 pytorch-warmup-scheduler>=0.0.1
 termcolor>=1.1.0
 timm>=0.4.12
-torch==1.10.0
+torch==2.2.0
 torchvision==0.11.1
 wandb>=0.12.7
